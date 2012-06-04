@@ -42,9 +42,13 @@ chaosGame :: IO ()
 chaosGame = do
   clear [ColorBuffer]
 
-  let testPt0 = Point2d (0.9) (0.0)
-  let testPt1 = Point2d (-0.7) (0.7)
-  let testPt2 = Point2d (-0.7) (-0.7)
+  --let testPt0 = Point2d (0.9) (0.0)
+  --let testPt1 = Point2d (-0.7) (0.7)
+  --let testPt2 = Point2d (-0.7) (-0.7)
+  let scale = 0.75
+  let testPt0 = unitCirclePoint scale 0.0
+  let testPt1 = unitCirclePoint scale 120.0
+  let testPt2 = unitCirclePoint scale 240.0
 
   seed <- newStdGen
   let rndList = take 5000 $ randoms seed
@@ -85,3 +89,10 @@ drawDot (Point2d x y) = do
   color blue
   renderPrimitive Points $ vertex $ Vertex2 x y
 
+--Convert radians to degrees
+fromDegrees :: Float -> Float
+fromDegrees degrees = degrees * pi / 180
+
+--Create a point2d that is properly scaled positioned on a specified degree on a unitCircle
+unitCirclePoint :: Float -> Float -> Point2d
+unitCirclePoint scale degrees = Point2d ((*scale) . cos . fromDegrees $ degrees) ((*scale) . sin . fromDegrees $ degrees)
