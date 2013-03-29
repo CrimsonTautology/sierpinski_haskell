@@ -10,12 +10,12 @@ main = do
   createWindow "Hello World"
   reshapeCallback $= Just reshape
 
-  --angle <- newIORef (0.0::GLfloat)
-  --delta <- newIORef (0.1::GLfloat)
+  angle <- newIORef (0.0::GLfloat)
+  delta <- newIORef (1.0::GLfloat)
   --position <- newIORef (0.0::GLfloat, 0.0)
   --keyboardMouseCallback $= Just (keyboardMouse delta position)
-  --idleCallback $= Just (idle angle delta)
-  displayCallback $= (chaosGame)
+  idleCallback $= Just (idle angle delta)
+  displayCallback $= (chaosGame angle)
   mainLoop
 
 
@@ -38,20 +38,19 @@ data Point2d = Point2d {
                } deriving (Show)
 
 
-chaosGame :: IO ()
-chaosGame = do
+chaosGame ::  HasGetter g => g Float -> IO ()
+chaosGame angle = do
   clear [ColorBuffer]
 
-  --let testPt0 = Point2d (0.9) (0.0)
-  --let testPt1 = Point2d (-0.7) (0.7)
-  --let testPt2 = Point2d (-0.7) (-0.7)
+  a <- get angle
+
   let scale = 0.75
-  let testPt0 = unitCirclePoint scale 0.0
-  let testPt1 = unitCirclePoint scale 120.0
-  let testPt2 = unitCirclePoint scale 240.0
+  let testPt0 = unitCirclePoint scale (0.0 + a)
+  let testPt1 = unitCirclePoint scale (120.0 + a)
+  let testPt2 = unitCirclePoint scale (240.0 + a)
 
   seed <- newStdGen
-  let rndList = take 5000 $ randoms seed
+  let rndList = take 10000 $ randoms seed
 
   drawDot testPt0
   drawDot testPt1
